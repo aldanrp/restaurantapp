@@ -6,7 +6,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:restaurantsapp/constants/color_materials.dart';
 import 'package:restaurantsapp/model/restaurant_data.dart';
-import 'package:restaurantsapp/pages/widgets/detailsPage.dart';
+import 'package:restaurantsapp/pages/widgets/details_page.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
