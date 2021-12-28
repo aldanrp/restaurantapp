@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:restaurantsapp/constants/color_materials.dart';
 import 'package:restaurantsapp/pages/home.dart';
-import 'package:restaurantsapp/pages/SearchPage.dart';
+import 'package:restaurantsapp/pages/search_page.dart';
 import 'package:restaurantsapp/pages/setting.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurantsapp/providers/restaurant_providers.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,10 +22,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'MakanYok',
-      home: MyHomePage(),
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => RestaurantData(),
+        ),
+      ],
+      builder: (context, child) => MaterialApp(
+        title: 'MakanYok',
+        home: MyHomePage(),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

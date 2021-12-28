@@ -4,15 +4,41 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
+
 import 'package:restaurantsapp/constants/color_materials.dart';
 import 'package:restaurantsapp/model/restaurant_data.dart';
-import 'package:restaurantsapp/pages/widgets/details_page.dart';
+import 'package:restaurantsapp/pages/details_page.dart';
+import 'package:restaurantsapp/providers/restaurant_providers.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  bool _isFavorit = true;
+  bool isInit = true;
+  bool _isloading = true;
+
+  @override
+  void didChangeDependencies() {
+    if (isInit) {
+      Provider.of<RestaurantData>(context).getRestaurant();
+      setState(() {
+        _isloading = false;
+      });
+    }
+    isInit = false;
+
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final allPlaceProvider = Provider.of<RestaurantData>(context);
     return Scaffold(
       backgroundColor: kWhite,
       body: SafeArea(
@@ -208,76 +234,50 @@ class Home extends StatelessWidget {
               ),
               //untuk bagian list
               SizedBox(
+                height: 5,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "This our recomended",
+                    style: TextStyle(
+                      fontSize: 19,
+                      color: kPrimary.withOpacity(0.7),
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                    ),
+                    textAlign: TextAlign.justify,
+                  ),
+                  Text(
+                    "See all",
+                    style: TextStyle(
+                      fontSize: 19,
+                      color: kLightGray.withOpacity(0.8),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
                 height: 10,
               ),
               Expanded(
-                flex: 4,
-                child: ListView(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "This our recomended",
-                              style: TextStyle(
-                                fontSize: 19,
-                                color: kPrimary.withOpacity(0.7),
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 2,
-                              ),
-                              textAlign: TextAlign.justify,
-                            ),
-                            Text(
-                              "See all",
-                              style: TextStyle(
-                                fontSize: 19,
-                                color: kLightGray.withOpacity(0.8),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 21),
-                          height: MediaQuery.of(context).size.height,
-                          child: FutureBuilder<String>(
-                            future: DefaultAssetBundle.of(context)
-                                .loadString('assets/local_restaurant.json'),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                final Restaurant restaurant =
-                                    restaurantFromJson(snapshot.data!);
-                                var dataRes = restaurant.restaurants;
-                                print("$dataRes");
-                                return ListView.builder(
-                                  itemCount: dataRes.length,
-                                  shrinkWrap: true,
-                                  physics: BouncingScrollPhysics(),
-                                  scrollDirection: Axis.vertical,
-                                  itemBuilder: (context, index) {
-                                    return _buildRestaurantItem(
-                                        context, dataRes[index]);
-                                  },
-                                );
-                              } else {
-                                return Text(
-                                  "Data engga masuk",
-                                  style: TextStyle(fontSize: 20, color: kBlack),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                flex: 3,
+                child: (allPlaceProvider.tempat.isEmpty)
+                    ? const Align(
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator())
+                    : ListView.builder(
+                        itemCount: allPlaceProvider.tempat.length,
+                        shrinkWrap: true,
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return _buildRestaurantItem(
+                              context, allPlaceProvider.tempat[index]);
+                        },
+                      ),
               ),
             ],
           ),
@@ -287,22 +287,36 @@ class Home extends StatelessWidget {
   }
 }
 
-Widget _buildRestaurantItem(
-    BuildContext context, RestaurantElement restaurantData) {
-  var menu = restaurantData.menus;
+Widget _buildRestaurantItem(BuildContext context, Restaurant restaurantData) {
+  const String urlImage = "https://restaurant-api.dicoding.dev/images/medium";
+  String imageid = restaurantData.pictureId;
+
   return GestureDetector(
     onTap: () {
-      print(restaurantData);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DetailsPage(restaurant: restaurantData),
-        ),
-      );
+      Future.delayed(Duration(milliseconds: 3000)).then((value) async {
+        String message = "in";
+        try {
+          await Provider.of<RestaurantData>(context, listen: false)
+              .getRestaurantid(restaurantData.id);
+        } catch (e) {
+          message = e.toString();
+          return print(message);
+        } finally {
+          var detail = Provider.of<RestaurantData>(context, listen: false)
+              .detailsresturant;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DetailsPage(restaurant: detail),
+            ),
+          );
+        }
+      });
     },
-    child: SizedBox(
+    child: Container(
       height: 120,
       width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.only(bottom: 10),
       child: Row(
         children: <Widget>[
           Container(
@@ -313,7 +327,7 @@ Widget _buildRestaurantItem(
               borderRadius: BorderRadius.circular(15),
               image: DecorationImage(
                   image: NetworkImage(
-                    restaurantData.pictureId,
+                    "$urlImage/$imageid",
                   ),
                   fit: BoxFit.cover),
             ),
@@ -321,70 +335,66 @@ Widget _buildRestaurantItem(
           SizedBox(
             width: 10,
           ),
-          Container(
-            width: MediaQuery.of(context).size.width / 1.56,
-            margin: EdgeInsets.only(top: 3),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  restaurantData.name,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: kBlack,
-                    fontWeight: FontWeight.bold,
-                  ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                restaurantData.name,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: kBlack,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 1.55,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                            CupertinoIcons.location_solid,
-                            color: kBlack,
-                          ),
-                          Text(
-                            restaurantData.city,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: kLightGray,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Icon(CupertinoIcons.heart)
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      CupertinoIcons.star_fill,
-                      color: Colors.orangeAccent,
-                      size: 18,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text(restaurantData.rating.toString(),
-                        style: TextStyle(
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 1.66,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.location_solid,
                           color: kBlack,
-                          fontSize: 17,
-                        ))
+                        ),
+                        Text(
+                          restaurantData.city,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: kLightGray,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Icon(CupertinoIcons.heart)
                   ],
                 ),
-              ],
-            ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                children: <Widget>[
+                  Icon(
+                    CupertinoIcons.star_fill,
+                    color: Colors.orangeAccent,
+                    size: 18,
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(restaurantData.rating.toString(),
+                      style: TextStyle(
+                        color: kBlack,
+                        fontSize: 17,
+                      ))
+                ],
+              ),
+            ],
           ),
         ],
       ),
