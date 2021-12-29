@@ -9,7 +9,7 @@ import 'package:readmore/readmore.dart';
 import 'package:restaurantsapp/constants/color_materials.dart';
 import 'package:restaurantsapp/model/restaurantdetails.dart';
 
-class DetailsPage extends StatelessWidget {
+class DetailsPage extends StatefulWidget {
   final Restaurants restaurant;
 
   const DetailsPage({
@@ -18,9 +18,14 @@ class DetailsPage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<DetailsPage> createState() => _DetailsPageState();
+}
+
+class _DetailsPageState extends State<DetailsPage> {
+  @override
   Widget build(BuildContext context) {
     const String urlImage = "https://restaurant-api.dicoding.dev/images/medium";
-    String imageid = restaurant.pictureId;
+    String imageid = widget.restaurant.pictureId;
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(slivers: <Widget>[
@@ -65,7 +70,7 @@ class DetailsPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          restaurant.name,
+                          widget.restaurant.name,
                           style: const TextStyle(
                             fontSize: 27,
                             color: kBlack,
@@ -86,7 +91,7 @@ class DetailsPage extends StatelessWidget {
                         color: kBlack,
                       ),
                       Text(
-                        restaurant.city,
+                        widget.restaurant.city,
                         style: const TextStyle(
                           fontSize: 18,
                           color: kLightGray,
@@ -108,7 +113,7 @@ class DetailsPage extends StatelessWidget {
                       const SizedBox(
                         width: 5,
                       ),
-                      Text(restaurant.rating.toString(),
+                      Text(widget.restaurant.rating.toString(),
                           style: const TextStyle(
                             color: kBlack,
                             fontSize: 17,
@@ -119,7 +124,7 @@ class DetailsPage extends StatelessWidget {
                     height: 10,
                   ),
                   ReadMoreText(
-                    restaurant.description,
+                    widget.restaurant.description,
                     trimLines: 3,
                     textAlign: TextAlign.justify,
                     trimMode: TrimMode.Line,
@@ -150,7 +155,8 @@ class DetailsPage extends StatelessWidget {
                     margin: EdgeInsets.only(bottom: 10),
                     child: RaisedButton(
                       onPressed: () {
-                        displayModalBottomSheet(context, restaurant.menus);
+                        displayModalBottomSheet(
+                            context, widget.restaurant.menus);
                       },
                       hoverColor: kGray,
                       padding: EdgeInsets.all(10),

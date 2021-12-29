@@ -1,16 +1,16 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:restaurantsapp/constants/color_materials.dart';
-import 'package:restaurantsapp/pages/home.dart';
+import 'package:restaurantsapp/pages/error_page.dart';
+import 'package:restaurantsapp/pages/home_page.dart';
 import 'package:restaurantsapp/pages/search_page.dart';
 import 'package:restaurantsapp/pages/setting.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantsapp/providers/restaurant_providers.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           create: (ctx) => RestaurantData(),
         ),
       ],
-      builder: (context, child) => MaterialApp(
+      builder: (context, child) => const MaterialApp(
         title: 'MakanYok',
         home: MyHomePage(),
         debugShowCheckedModeBanner: false,
@@ -46,6 +46,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int currentIndex = 0;
+  bool hasInternet = false;
+
+  @override
+  void initState() {
+    super.initState();
+    hasconnection();
+  }
 
   void changePage(int index) {
     setState(() {
@@ -53,75 +60,98 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Widget _getWidget() {
+  Widget _getWidget(bool hasInternet) {
     if (currentIndex == 1) {
-      return const SearchPage();
+      return SearchPage(
+        hasInternet: hasInternet,
+        hasconnection: hasconnection(),
+      );
     } else if (currentIndex == 2) {
       return const Setting();
     }
-    return const Home();
+    return Home(
+      hasInternet: hasInternet,
+      hasconnection: hasconnection(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _getWidget(),
-      bottomNavigationBar: BottomNavyBar(
-        backgroundColor: kWhite,
-        containerHeight: 70,
-        selectedIndex: currentIndex,
-        showElevation: true,
-        itemCornerRadius: 24,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        onItemSelected: (index) => setState(() => currentIndex = index),
-        items: <BottomNavyBarItem>[
-          BottomNavyBarItem(
-            icon: const Icon(
-              CupertinoIcons.home,
-              size: 30,
-            ),
-            title: Text(
-              'Home',
-              style: TextStyle(
-                fontSize: 20,
+    if (hasInternet == true) {
+      return Scaffold(
+        body: _getWidget(hasInternet),
+        bottomNavigationBar: BottomNavyBar(
+          backgroundColor: kWhite,
+          containerHeight: 70,
+          selectedIndex: currentIndex,
+          showElevation: true,
+          itemCornerRadius: 24,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          onItemSelected: (index) => setState(() {
+            currentIndex = index;
+            hasconnection();
+          }),
+          items: <BottomNavyBarItem>[
+            BottomNavyBarItem(
+              icon: const Icon(
+                CupertinoIcons.home,
+                size: 30,
               ),
-            ),
-            activeColor: Colors.red,
-            inactiveColor: kLightGray,
-            textAlign: TextAlign.center,
-          ),
-          BottomNavyBarItem(
-            icon: Icon(
-              Icons.search,
-              size: 30,
-            ),
-            title: Text(
-              'Search',
-              style: TextStyle(
-                fontSize: 20,
+              title: const Text(
+                'Home',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
+              activeColor: Colors.red,
+              inactiveColor: kLightGray,
+              textAlign: TextAlign.center,
             ),
-            activeColor: Colors.purpleAccent,
-            inactiveColor: kLightGray,
-            textAlign: TextAlign.center,
-          ),
-          BottomNavyBarItem(
-            icon: Icon(
-              Icons.settings,
-              size: 30,
-            ),
-            title: Text(
-              'Setting',
-              style: TextStyle(
-                fontSize: 20,
+            BottomNavyBarItem(
+              icon: const Icon(
+                Icons.search,
+                size: 30,
               ),
+              title: const Text(
+                'Search',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              activeColor: Colors.purpleAccent,
+              inactiveColor: kLightGray,
+              textAlign: TextAlign.center,
             ),
-            activeColor: Colors.black,
-            inactiveColor: kLightGray,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
+            BottomNavyBarItem(
+              icon: const Icon(
+                Icons.settings,
+                size: 30,
+              ),
+              title: const Text(
+                'Setting',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              activeColor: Colors.black,
+              inactiveColor: kLightGray,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: UnderConstructor(hasconnection: hasconnection()),
+      );
+    }
+  }
+
+  Future<void> hasconnection() async {
+    bool _hasInternet = await InternetConnectionChecker().hasConnection;
+    setState(() {
+      hasInternet = _hasInternet;
+    });
   }
 }
