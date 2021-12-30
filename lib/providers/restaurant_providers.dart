@@ -26,7 +26,7 @@ class RestaurantData with ChangeNotifier {
         notifyListeners();
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -44,7 +44,7 @@ class RestaurantData with ChangeNotifier {
         notifyListeners();
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 
@@ -62,7 +62,7 @@ class RestaurantData with ChangeNotifier {
         notifyListeners();
       }
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 }

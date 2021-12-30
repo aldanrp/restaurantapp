@@ -4,11 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:restaurantsapp/constants/color_materials.dart';
+import 'package:restaurantsapp/data/db/database_helper.dart';
 import 'package:restaurantsapp/pages/error_page.dart';
+import 'package:restaurantsapp/pages/favorite_page.dart';
 import 'package:restaurantsapp/pages/home_page.dart';
 import 'package:restaurantsapp/pages/search_page.dart';
-import 'package:restaurantsapp/pages/setting.dart';
+import 'package:restaurantsapp/pages/setting_page.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurantsapp/providers/database_provider.dart';
 import 'package:restaurantsapp/providers/restaurant_providers.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
@@ -26,6 +29,11 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (ctx) => RestaurantData(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => DatabaseProvider(
+            databaseHelper: DatabaseHelper(),
+          ),
         ),
       ],
       builder: (context, child) => const MaterialApp(
@@ -67,6 +75,11 @@ class _MyHomePageState extends State<MyHomePage> {
         hasconnection: hasconnection(),
       );
     } else if (currentIndex == 2) {
+      return Favoritepage(
+        hasInternet: hasInternet,
+        hasconnection: hasconnection(),
+      );
+    } else if (currentIndex == 3) {
       return const Setting();
     }
     return Home(
@@ -119,6 +132,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               activeColor: Colors.purpleAccent,
+              inactiveColor: kLightGray,
+              textAlign: TextAlign.center,
+            ),
+            BottomNavyBarItem(
+              icon: const Icon(
+                CupertinoIcons.heart_fill,
+                size: 30,
+              ),
+              title: const Text(
+                'Favorite',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              activeColor: Colors.redAccent.shade700,
               inactiveColor: kLightGray,
               textAlign: TextAlign.center,
             ),

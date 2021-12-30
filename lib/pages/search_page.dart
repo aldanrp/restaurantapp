@@ -81,6 +81,9 @@ class _SearchPageState extends State<SearchPage> {
                         height: 20,
                       ),
                       buildSearch(),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Expanded(
                         child: (searchplaces.isEmpty)
                             ? Container(

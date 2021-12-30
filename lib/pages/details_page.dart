@@ -1,5 +1,3 @@
-// ignore_for_file: file_names, deprecated_member_use, prefer_const_constructors
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -77,7 +75,7 @@ class _DetailsPageState extends State<DetailsPage> {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        Icon(
+                        const Icon(
                           CupertinoIcons.heart,
                         ),
                       ],
@@ -148,18 +146,18 @@ class _DetailsPageState extends State<DetailsPage> {
                       height: 2,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 3,
                   ),
                   Container(
-                    margin: EdgeInsets.only(bottom: 10),
+                    margin: const EdgeInsets.only(bottom: 10),
                     child: RaisedButton(
                       onPressed: () {
                         displayModalBottomSheet(
                             context, widget.restaurant.menus);
                       },
                       hoverColor: kGray,
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       color: kPrimary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -191,7 +189,7 @@ void displayModalBottomSheet(BuildContext context, Menus restaurant) {
     context: context,
     builder: (BuildContext bc) {
       return Container(
-        padding: EdgeInsets.only(top: 20, left: 5, right: 5),
+        padding: const EdgeInsets.only(top: 20, left: 5, right: 5),
         child: GridView.count(
           shrinkWrap: true,
           scrollDirection: Axis.vertical,
@@ -213,18 +211,18 @@ void displayModalBottomSheet(BuildContext context, Menus restaurant) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: restaurant.foods.map((data) {
                     return Container(
-                      padding: EdgeInsets.all(3),
-                      margin: EdgeInsets.only(top: 5),
+                      padding: const EdgeInsets.all(3),
+                      margin: const EdgeInsets.only(top: 5),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.circle,
                             size: 11,
                           ),
-                          SizedBox(width: 3),
+                          const SizedBox(width: 3),
                           Text(
                             data.name,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               color: kBlack,
                             ),
@@ -251,19 +249,19 @@ void displayModalBottomSheet(BuildContext context, Menus restaurant) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: restaurant.drinks.map((data) {
                     return Container(
-                      margin: EdgeInsets.only(top: 5, bottom: 5),
+                      margin: const EdgeInsets.only(top: 5, bottom: 5),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.circle,
                             size: 11,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 3,
                           ),
                           Text(
                             data.name,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               color: kBlack,
                             ),
