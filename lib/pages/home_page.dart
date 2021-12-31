@@ -4,6 +4,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantsapp/constants/color_materials.dart';
+import 'package:restaurantsapp/constants/navigation.dart';
 import 'package:restaurantsapp/pages/error_page.dart';
 import 'package:restaurantsapp/pages/widgets/GlobalWidgets/list_place.dart';
 import 'package:restaurantsapp/providers/restaurant_providers.dart';
@@ -328,14 +329,8 @@ class _HomeState extends State<Home> {
                                                         context,
                                                         listen: false)
                                                     .detailsresturant;
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    DetailsPage(
-                                                        restaurant: detail),
-                                              ),
-                                            );
+                                            Navigation.intentWithData(
+                                                DetailsPage.routeName, detail);
                                           }
                                         }
                                       } else {

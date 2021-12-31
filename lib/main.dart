@@ -4,7 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:restaurantsapp/constants/color_materials.dart';
+import 'package:restaurantsapp/constants/navigation.dart';
 import 'package:restaurantsapp/data/db/database_helper.dart';
+import 'package:restaurantsapp/model/restaurantdetails.dart';
+import 'package:restaurantsapp/pages/details_page.dart';
 import 'package:restaurantsapp/pages/error_page.dart';
 import 'package:restaurantsapp/pages/favorite_page.dart';
 import 'package:restaurantsapp/pages/home_page.dart';
@@ -36,10 +39,17 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ],
-      builder: (context, child) => const MaterialApp(
+      builder: (context, child) => MaterialApp(
         title: 'MakanYok',
-        home: MyHomePage(),
+        home: const MyHomePage(),
         debugShowCheckedModeBanner: false,
+        navigatorKey: navigatorKey,
+        routes: {
+          DetailsPage.routeName: (context) => DetailsPage(
+                restaurant:
+                    ModalRoute.of(context)?.settings.arguments as Restaurants,
+              ),
+        },
       ),
     );
   }

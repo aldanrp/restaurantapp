@@ -9,6 +9,7 @@ import 'package:restaurantsapp/model/restaurantdetails.dart';
 
 class DetailsPage extends StatefulWidget {
   final Restaurants restaurant;
+  static const routeName = '/article_detail';
 
   const DetailsPage({
     Key? key,
