@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:provider/provider.dart';
 import 'package:restaurantsapp/constants/color_materials.dart';
 import 'package:restaurantsapp/constants/navigation.dart';

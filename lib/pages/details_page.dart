@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:readmore/readmore.dart';
 import 'package:restaurantsapp/constants/color_materials.dart';
 import 'package:restaurantsapp/model/restaurantdetails.dart';
+import 'package:restaurantsapp/pages/reviews_page.dart';
 
 class DetailsPage extends StatefulWidget {
   final Restaurants restaurant;
@@ -59,7 +58,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 children: [
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    margin: const EdgeInsets.only(right: 15, bottom: 5),
+                    margin: const EdgeInsets.only(bottom: 5),
                     padding: const EdgeInsets.only(bottom: 5),
                     decoration: const BoxDecoration(
                       border: Border(
@@ -83,41 +82,69 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Icon(
-                        CupertinoIcons.location_solid,
-                        color: kBlack,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            CupertinoIcons.location_solid,
+                            color: kBlack,
+                          ),
+                          Text(
+                            widget.restaurant.address,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: kLightGray,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        widget.restaurant.city,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: kLightGray,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ReviewsPage(restaurant: widget.restaurant),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              CupertinoIcons.star_fill,
+                              color: Colors.orangeAccent,
+                              size: 18,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              widget.restaurant.rating.toString(),
+                              style: const TextStyle(
+                                color: kBlack,
+                                fontSize: 17,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            const Text(
+                              "Reviews",
+                              style: TextStyle(
+                                color: kBlack,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(
                     height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        CupertinoIcons.star_fill,
-                        color: Colors.orangeAccent,
-                        size: 18,
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(widget.restaurant.rating.toString(),
-                          style: const TextStyle(
-                            color: kBlack,
-                            fontSize: 17,
-                          ))
-                    ],
                   ),
                   const SizedBox(
                     height: 10,
